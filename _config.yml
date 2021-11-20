@@ -106,4 +106,4 @@ theme: matery
 deploy:
   type: git
   repo: git@github.com:bryanspan/bryanspan.github.io.git  #这里的网址填你自己的
-  branch: main 
+  branch: master
