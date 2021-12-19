@@ -6,12 +6,14 @@
     <meta charset="utf-8">
     <meta name="keywords" content="Flink Start, here is keywords">
     <meta name="description" content="环境
+
 java 8
 flink 14
 
-构建项目使用Flink Mave Archetype来创建一个示例项目，使用官网构建脚本。
+构建项目
+使用Flink Mave Archetype来创建一个示例项目，使用官网构建脚本。
 $ mvn archetype:generate \
-    -DarchetypeGroupId&amp;#x3D">
+    -DarchetypeGroupId&amp;#x">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -485,11 +487,13 @@ $ mvn archetype:generate \
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
+                <h3 id="环境">环境</h3>
+<ul>
 <li>java 8</li>
 <li>flink 14</li>
 </ul>
-<h3 id="构建项目"><a href="#构建项目" class="headerlink" title="构建项目"></a>构建项目</h3><p>使用Flink Mave Archetype来创建一个示例项目，使用官网构建脚本。</p>
+<h3 id="构建项目">构建项目</h3>
+<p>使用Flink Mave Archetype来创建一个示例项目，使用官网构建脚本。</p>
 <pre class="line-numbers language-none"><code class="language-none">$ mvn archetype:generate \
     -DarchetypeGroupId&#x3D;org.apache.flink \
     -DarchetypeArtifactId&#x3D;flink-walkthrough-datastream-java \
@@ -499,7 +503,6 @@ $ mvn archetype:generate \
     -Dversion&#x3D;0.1 \
     -Dpackage&#x3D;spendreport \
     -DinteractiveMode&#x3D;false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>创建成功后目录结构如下:</p>
 <pre class="line-numbers language-none"><code class="language-none">D:.
 └─frauddetection
@@ -514,8 +517,8 @@ $ mvn archetype:generate \
             │
             └─resources
                     log4j2.properties<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="导入运行"><a href="#导入运行" class="headerlink" title="导入运行"></a>导入运行</h3><p>Idea 导入该项目运行后报CNFE导致的JNI error，原因是上面构建出来的pom文件中有两个Flink依赖包的scope是provided，没有包含在classpath里面。</p>
+<h3 id="导入运行">导入运行</h3>
+<p>Idea 导入该项目运行后报CNFE导致的JNI error，原因是上面构建出来的pom文件中有两个Flink依赖包的scope是provided，没有包含在classpath里面。</p>
 <p>解决方法：</p>
 <ul>
 <li>将其改为compile，在打包时再改回provided。</li>
@@ -536,7 +539,6 @@ Caused by: java.lang.ClassNotFoundException: org.apache.flink.streaming.api.func
 	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
 	... 7 more
 Error: A JNI error has occurred, please check your installation and try again<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>运行程序，查看输出。 这里的运行结果表示每一笔交易都会触发alert。至此，第一个flink项目就成功运行起来了，接下来分析。</p>
 <pre class="line-numbers language-none"><code class="language-none">00:12:37,569 WARN  org.apache.flink.runtime.webmonitor.WebMonitorUtils          [] - Log file environment variable &#39;log.file&#39; is not set.
 00:12:37,571 WARN  org.apache.flink.runtime.webmonitor.WebMonitorUtils          [] - JobManager log files are unavailable in the web dashboard. Log file location not found in environment variable &#39;log.file&#39; or configuration key &#39;web.log.path&#39;.
@@ -548,8 +550,8 @@ Error: A JNI error has occurred, please check your installation and try again<sp
 00:12:39,400 INFO  org.apache.flink.walkthrough.common.sink.AlertSink           [] - Alert&#123;id&#x3D;1&#125;
 00:12:39,501 INFO  org.apache.flink.walkthrough.common.sink.AlertSink           [] - Alert&#123;id&#x3D;2&#125;
 00:12:39,601 INFO  org.apache.flink.walkthrough.common.sink.AlertSink           [] - Alert&#123;id&#x3D;3&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="Flink项目的基本结构"><a href="#Flink项目的基本结构" class="headerlink" title="Flink项目的基本结构"></a>Flink项目的基本结构</h3><ol>
+<h3 id="Flink项目的基本结构">Flink项目的基本结构</h3>
+<ol>
 <li>获取执行环境</li>
 <li>加载数据</li>
 <li>如何转换/处理数据</li>
@@ -565,7 +567,7 @@ Error: A JNI error has occurred, please check your installation and try again<sp
         <span class="token punctuation">.</span><span class="token function">addSource</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">TransactionSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">name</span><span class="token punctuation">(</span><span class="token string">"transactions"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token comment">//3. 数据转换</span>
+<span class="token comment">//3. 数据转换与处理</span>
 <span class="token class-name">DataStream</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Alert</span><span class="token punctuation">></span></span> alerts <span class="token operator">=</span> transactions
         <span class="token punctuation">.</span><span class="token function">keyBy</span><span class="token punctuation">(</span><span class="token class-name">Transaction</span><span class="token operator">::</span><span class="token function">getAccountId</span><span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FraudDetector</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
@@ -578,7 +580,6 @@ alerts
 
 <span class="token comment">//5. 启动执行</span>
 env<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token string">"Fraud Detection"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
 <p>前面提到该程序每一笔都会触发alert，显然不合理，后面继续对它进行修改，让它更合理的运行。</p>
 
                 
