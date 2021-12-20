@@ -4,8 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Hello World, here is keywords">
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hex">
+    <meta name="keywords" content="Flink - 任务失败重启, here is keywords">
+    <meta name="description" content="当一个task失败时，Flink需要重启失败的task以及其他受到影响的tasks来将job恢复到一个正常的状态。
+重启策略（Restart strategies）和故障恢复策略（failover strategies）被用来控制task的">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +18,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Hello World | 4 AM</title>
+    <title>Flink - 任务失败重启 | 4 AM</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -309,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/9.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Hello World</h1>
+                    <h1 class="description center-align post-title">Flink - 任务失败重启</h1>
                 </div>
             </div>
         </div>
@@ -430,8 +431,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Hexo/">
-                                <span class="chip bg-color">Hexo</span>
+                            <a href="/tags/Flink/">
+                                <span class="chip bg-color">Flink</span>
                             </a>
                         
                     </div>
@@ -442,8 +443,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Others/" class="post-category">
-                                Others
+                            <a href="/categories/Flink/" class="post-category">
+                                Flink
                             </a>
                         
                     </div>
@@ -455,7 +456,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-11-20
+                    2021-11-25
                 </div>
                 
 
@@ -479,19 +480,104 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+                <p>当一个task失败时，Flink需要重启失败的task以及其他受到影响的tasks来将job恢复到一个正常的状态。</p>
+<p>重启策略（Restart strategies）和故障恢复策略（failover strategies）被用来控制task的重启。重启策略决定是否以及何时失败的/受影响的tasks可以被重启。故障恢复策略决定哪一个task应该被重启来恢复job。</p>
+<hr>
+<h2 id="重启策略"><a href="#重启策略" class="headerlink" title="重启策略"></a>重启策略</h2><p>当job没有定义特定的重启策略时，集群总是以一个默认的重启策略重启。当提交的job配置了重启策略时，集群的默认重启策略会被覆盖。</p>
+<p>默认的重启策略是通过Flink的配置文件 flink-conf.yaml设置的。配置参数 restarat-strategy指定哪一个策略会被使用。如果没有启用checkpointing，使用的策略为no restart。如果启用checkpointing并且没有指定重启策略，将使用重试次数为 Integer.MAX_VALUE的“fixed-delay”策略。</p>
+<h3 id="Fixed-Delay-重启策略"><a href="#Fixed-Delay-重启策略" class="headerlink" title="Fixed Delay 重启策略"></a>Fixed Delay 重启策略</h3><p>Fixed Delay重启策略按照给定的次数重启job。如果尝试的次数超过了给定的最大次数，job将最终失败。在连续的两次重启尝试之间，该重启策略会等待一段固定长度的时间。</p>
+<p>通过 flink-conf.yaml 中设置如下配置参数，默认启用此策略。</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">restart-strategy</span><span class="token punctuation">:</span> fixed<span class="token punctuation">-</span>delay
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server/s<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+//声明job失败之前重试的次数<span class="token punctuation">,</span> 默认：3，类型：Integer
+<span class="token key atrule">restart-strategy.fixed-delay.attempts</span><span class="token punctuation">:</span> <span class="token number">3</span>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate/g<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+//两次连续重试之间的时间间隔，默认：1s<span class="token punctuation">,</span> 类型：Duration
+<span class="token key atrule">restart-strategy.fixed-delay.delay</span><span class="token punctuation">:</span> 10 s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy/d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在代码中设置：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">StreamExecutionEnvironment</span> env <span class="token operator">=</span> <span class="token class-name">StreamExecutionEnvironment</span><span class="token punctuation">.</span><span class="token function">getExecutionEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+env<span class="token punctuation">.</span><span class="token function">setRestartStrategy</span><span class="token punctuation">(</span><span class="token class-name">RestartStrategies</span><span class="token punctuation">.</span><span class="token function">fixedDelayRestart</span><span class="token punctuation">(</span>
+  <span class="token number">3</span><span class="token punctuation">,</span> <span class="token comment">// 尝试重启的次数</span>
+  <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>SECONDS<span class="token punctuation">)</span> <span class="token comment">// 延时</span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<h3 id="Exponential-Delay-重启策略"><a href="#Exponential-Delay-重启策略" class="headerlink" title="Exponential Delay 重启策略"></a>Exponential Delay 重启策略</h3><p>指数延迟重启策略试图无限的重启job，延迟会以指数增加到最大值。job永远不会失败，当延迟达到最大设置的值时，job会以最大延迟一直重试。当job可以正确的执行时，指数延迟的值将会在一段时间后重置，这个时间是可配置的。</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">restart-strategy</span><span class="token punctuation">:</span> exponential<span class="token punctuation">-</span>delay
+
+// 初识延迟，默认：1s<span class="token punctuation">,</span> 类型：Duration
+<span class="token key atrule">restart-strategy.exponential-delay.initial-backoff</span><span class="token punctuation">:</span> 1 s
+
+//最大延迟，默认：5 mins， 类型：Duration
+<span class="token key atrule">restart-strategy.exponential-delay.max-backoff</span><span class="token punctuation">:</span> 5 min
+
+//重试失败后乘以该值作为新的delay，直到达到最大延迟，默认：2.0，类型：Double
+<span class="token key atrule">restart-strategy.exponential-delay.backoff-multiplier</span><span class="token punctuation">:</span> <span class="token number">2.0</span>
+
+//job正确运行改时间后，延时时间将恢复为初识延迟，默认：1h，类型：Duration
+<span class="token key atrule">restart-strategy.exponential-delay.reset-backoff-threshold</span><span class="token punctuation">:</span> 1 h
+
+//抖动因子，每次重启间隔时间的最大加/减范围，防止大量job在同一时刻重启，默认：0.1，类型：Double
+<span class="token key atrule">restart-strategy.exponential-delay.jitter-factor</span><span class="token punctuation">:</span> <span class="token number">0.1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在代码中设置：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">StreamExecutionEnvironment</span> env <span class="token operator">=</span> <span class="token class-name">StreamExecutionEnvironment</span><span class="token punctuation">.</span><span class="token function">getExecutionEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+env<span class="token punctuation">.</span><span class="token function">setRestartStrategy</span><span class="token punctuation">(</span><span class="token class-name">RestartStrategies</span><span class="token punctuation">.</span><span class="token function">exponentialDelayRestart</span><span class="token punctuation">(</span>
+  <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token number">1.1</span><span class="token punctuation">,</span> <span class="token comment">// exponential multiplier</span>
+  <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">milliseconds</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token comment">// threshold duration to reset delay to its initial value</span>
+  <span class="token number">0.1</span> <span class="token comment">// jitter</span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Failure-Rate-重启策略"><a href="#Failure-Rate-重启策略" class="headerlink" title="Failure Rate 重启策略"></a>Failure Rate 重启策略</h3><p>故障率重启策略会在job发生故障后重启job，但是当故障率超过设定的限制时，job最终会失败。重启策略会在两次连续的重启尝试之间等待一段固定长度的时间。（故障率指每个时间间隔发生故障的次数）</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">restart-strategy</span><span class="token punctuation">:</span> failure<span class="token punctuation">-</span>rate
+
+//两次连续重启之间的时间间隔，默认：1s，类型：Duration
+<span class="token key atrule">restart-strategy.failure-rate.delay</span><span class="token punctuation">:</span> 1s 
+
+//计算失败率的时间长度，默认：1min，类型：Duration
+<span class="token key atrule">restart-strategy.failure-rate.failure-rate-interval</span><span class="token punctuation">:</span> 1 min
+
+//计算失败率的时间长度内的最大失败次数，默认：1，类型：Integer
+<span class="token key atrule">restart-strategy.failure-rate.max-failure-per-interval</span><span class="token punctuation">:</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在代码中设置：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">StreamExecutionEnvironment</span> env <span class="token operator">=</span> <span class="token class-name">StreamExecutionEnvironment</span><span class="token punctuation">.</span><span class="token function">getExecutionEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+env<span class="token punctuation">.</span><span class="token function">setRestartStrategy</span><span class="token punctuation">(</span><span class="token class-name">RestartStrategies</span><span class="token punctuation">.</span><span class="token function">failureRateRestart</span><span class="token punctuation">(</span>
+  <span class="token number">3</span><span class="token punctuation">,</span> <span class="token comment">// 每个时间间隔的最大故障次数</span>
+  <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MINUTES<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token comment">// 测量故障率的时间间隔</span>
+  <span class="token class-name">Time</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>SECONDS<span class="token punctuation">)</span> <span class="token comment">// 延时</span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="No-Restart-重启策略"><a href="#No-Restart-重启策略" class="headerlink" title="No Restart  重启策略"></a>No Restart  重启策略</h3><p>job直接失败不重启。</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">restart-strategy</span><span class="token punctuation">:</span> none<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>在代码中设置：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">StreamExecutionEnvironment</span> env <span class="token operator">=</span> <span class="token class-name">StreamExecutionEnvironment</span><span class="token punctuation">.</span><span class="token function">getExecutionEnvironment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+env<span class="token punctuation">.</span><span class="token function">setRestartStrategy</span><span class="token punctuation">(</span><span class="token class-name">RestartStrategies</span><span class="token punctuation">.</span><span class="token function">noRestart</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Fallback-重启策略"><a href="#Fallback-重启策略" class="headerlink" title="Fallback 重启策略"></a>Fallback 重启策略</h3><p>使用集群定义的重启策略。 这对于启用了checkpoint的流处理程序很有帮助。如果没有定义其他重启策略，默认选择固定延时重启策略。</p>
+<h2 id="故障恢复策略"><a href="#故障恢复策略" class="headerlink" title="故障恢复策略"></a>故障恢复策略</h2><p>Flink支持多种不同的故障恢复策略，该策略可通过flink配置文件flink-conf.yaml中的配置参数 jobmanager.execution.failover-strategy设置。</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">//当故障恢复策略为full时，集群中的task发生故障时，该job的所有task都会重启。
+<span class="token key atrule">jobmanager.execution.failover-strategy</span><span class="token punctuation">:</span> full
+
+//该模式下flink会把task分为不同的region，当某一个task发生故障时，flink会计算需要故障恢复的最小region
+<span class="token key atrule">jobmanager.execution.failover-strategy</span><span class="token punctuation">:</span> region<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Restart-Pipelined-Region-Failover-Strategy"><a href="#Restart-Pipelined-Region-Failover-Strategy" class="headerlink" title="Restart Pipelined Region Failover Strategy"></a>Restart Pipelined Region Failover Strategy</h3><p>该策略会将作业中的所有task划分为数个region。当有task发生故障时，它会尝试找出进行故障恢复需要重启的最小region集合。 相比于全局重启故障恢复策略，这种策略在一些场景下的故障恢复需要重启的task会更少。</p>
+<p>此处 Region 指以 Pipelined 形式进行数据交换的 Task 集合。也就是说，Batch 形式的数据交换会构成 Region 的边界。</p>
+<ul>
+<li>DataStream 和 流式 Table/SQL 作业的所有数据交换都是 Pipelined 形式的。</li>
+<li>批处理式 Table/SQL 作业的所有数据交换默认都是 Batch 形式的。</li>
+<li>DataSet 作业中的数据交换形式会根据 ExecutionConfig 中配置的 ExecutionMode 决定。</li>
+</ul>
+<p>需要重启的 Region 的判断逻辑如下：</p>
+<ul>
+<li>出错 Task 所在 Region 需要重启。</li>
+<li>如果要重启的 Region 需要消费的数据有部分无法访问（丢失或损坏），产出该部分数据的 Region 也需要重启。</li>
+<li>需要重启的 Region 的下游 Region 也需要重启。这是出于保障数据一致性的考虑，因为一些非确定性的计算或者分发会导致同一个 Result Partition 每次产生时包含的数据都不相同。</li>
+</ul>
 
                 
             </div>
@@ -518,7 +604,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://bryanspan.github.io/2021/11/20/hello-world/">https://bryanspan.github.io/2021/11/20/hello-world/</a>
+                    <a href="https://bryanspan.github.io/2021/11/25/Flink-%E4%BB%BB%E5%8A%A1%E5%A4%B1%E8%B4%A5%E9%87%8D%E5%90%AF/">https://bryanspan.github.io/2021/11/25/Flink-%E4%BB%BB%E5%8A%A1%E5%A4%B1%E8%B4%A5%E9%87%8D%E5%90%AF/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -556,8 +642,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Hexo/">
-                                    <span class="chip bg-color">Hexo</span>
+                                <a href="/tags/Flink/">
+                                    <span class="chip bg-color">Flink</span>
                                 </a>
                             
                         </div>
@@ -729,9 +815,60 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2021/11/25/Flink-%E4%BB%BB%E5%8A%A1%E5%A4%B1%E8%B4%A5%E9%87%8D%E5%90%AF/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="Flink - 任务失败重启">
+                        
+                        <span class="card-title">Flink - 任务失败重启</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-25
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Flink/" class="post-category">
+                                    Flink
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Flink/">
+                        <span class="chip bg-color">Flink</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/2021/11/23/Flink-Start/">
                     <div class="card-image">
@@ -749,9 +886,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-23
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-23
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -769,56 +906,6 @@
                     
                     <a href="/tags/Flink/">
                         <span class="chip bg-color">Flink</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/11/20/hello-world/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
-                        
-                        <span class="card-title">Hello World</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-20
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Others/" class="post-category">
-                                    Others
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Hexo/">
-                        <span class="chip bg-color">Hexo</span>
                     </a>
                     
                 </div>
